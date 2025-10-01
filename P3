@@ -1,0 +1,55 @@
+Aim: Intensity Transformations using
+1. Image Negatives (Linear)
+2. Log Transformations
+3. Power-Law (Gamma) Transformations
+4. Piecewise-Linear Transformation Functions in python without comment
+
+CMD: pip install opencv-python matplotlib scikit-image numpy
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+# Load image
+img_color = cv2.imread(r"C:\Users\affan\OneDrive\Desktop\scene.jpg")  # Change path
+img_color = cv2.cvtColor(img_color, cv2.COLOR_BGR2RGB)
+
+# Convert to grayscale
+img_gray = cv2.cvtColor(img_color, cv2.COLOR_RGB2GRAY)
+
+# 1. Negative Transformation
+negative = 255 - img_gray
+
+# 2. Log Transformation
+img_float = img_gray.astype(np.float32)
+c = 255 / np.log(1 + np.max(img_float))
+log_trans = c * np.log(1 + img_float)
+log_trans = np.array(log_trans, dtype=np.uint8)
+
+# 3. Gamma Transformation (Power-Law)
+gamma = 0.5   # try values <1 (brighten), >1 (darken)
+gamma_trans = np.array(255 * (img_float / 255) ** gamma, dtype=np.uint8)
+
+# 4. Piecewise Linear Transformation
+def piecewise_linear(x):
+    if x < 100:
+        return 0.5 * x
+    elif x < 200:
+        return 1.5 * (x - 100) + 50
+    else:
+        return 255
+
+piecewise = np.array([piecewise_linear(i) for i in range(256)], dtype=np.uint8)
+piecewise_img = cv2.LUT(img_gray, piecewise)
+
+# Display results
+plt.figure(figsize=(12,8))
+
+plt.subplot(2,3,1); plt.title("Original Color"); plt.imshow(img_color); plt.axis("off")
+plt.subplot(2,3,2); plt.title("Original Gray"); plt.imshow(img_gray, cmap="gray"); plt.axis("off")
+plt.subplot(2,3,3); plt.title("Negative"); plt.imshow(negative, cmap="gray"); plt.axis("off")
+plt.subplot(2,3,4); plt.title("Log"); plt.imshow(log_trans, cmap="gray"); plt.axis("off")
+plt.subplot(2,3,5); plt.title("Gamma"); plt.imshow(gamma_trans, cmap="gray"); plt.axis("off")
+plt.subplot(2,3,6); plt.title("Piecewise Linear"); plt.imshow(piecewise_img, cmap="gray"); plt.axis("off")
+
+plt.show()
