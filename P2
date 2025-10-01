@@ -1,0 +1,95 @@
+Aim:Demonstrate the following aspects of signal and image processing
+1 convolution on grey and color image
+2 templet macthing in python
+
+cmd: pip install opencv-python matplotlib scikit-image numpy
+
+import cv2
+import numpy as np
+import matplotlib.pyplot as plt
+
+
+# Path to Lena image (make sure you saved lena.jpg on Desktop)
+img_color = cv2.imread(r"C:\Users\affan\OneDrive\Desktop\website.jpg")  
+
+
+# Convert to RGB for matplotlib
+img_color = cv2.cvtColor(img_color, cv2.COLOR_BGR2RGB)
+
+# Convert to grayscale
+img_gray = cv2.cvtColor(img_color, cv2.COLOR_RGB2GRAY)
+
+# ==============================
+# Part 1: Convolution
+# ==============================
+
+# Sharpening kernel
+kernel = np.array([[0, -1, 0],
+                   [-1, 5, -1],
+                   [0, -1, 0]])
+
+# Apply convolution (filter2D)
+convolved_gray = cv2.filter2D(img_gray, -1, kernel)
+convolved_color = cv2.filter2D(img_color, -1, kernel)
+
+# Show convolution results
+plt.figure(figsize=(10, 6))
+
+plt.subplot(2, 2, 1)
+plt.title("Original Gray")
+plt.imshow(img_gray, cmap="gray")
+plt.axis("off")
+
+plt.subplot(2, 2, 2)
+plt.title("Convolved Gray")
+plt.imshow(convolved_gray, cmap="gray")
+plt.axis("off")
+
+plt.subplot(2, 2, 3)
+plt.title("Original Color")
+plt.imshow(img_color)
+plt.axis("off")
+
+plt.subplot(2, 2, 4)
+plt.title("Convolved Color")
+plt.imshow(convolved_color)
+plt.axis("off")
+
+plt.show()
+
+# ==============================
+# Part 2: Template Matching
+# ==============================
+
+# For template matching, we take a small part of the image as template
+# Example: crop Lena's eye from grayscale image
+template = img_gray[200:250, 200:250]   # adjust crop region as needed
+w, h = template.shape[::-1]
+
+# Apply template matching
+res = cv2.matchTemplate(img_gray, template, cv2.TM_CCOEFF_NORMED)
+
+# Get the best match location
+min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(res)
+
+# Draw rectangle around matched region
+top_left = max_loc
+bottom_right = (top_left[0] + w, top_left[1] + h)
+
+img_match = img_color.copy()
+cv2.rectangle(img_match, top_left, bottom_right, (255, 0, 0), 2)
+
+# Show template and matching result
+plt.figure(figsize=(10, 4))
+
+plt.subplot(1, 2, 1)
+plt.title("Template (cropped eye)")
+plt.imshow(template, cmap="gray")
+plt.axis("off")
+
+plt.subplot(1, 2, 2)
+plt.title("Template Matching Result")
+plt.imshow(img_match)
+plt.axis("off")
+
+plt.show()
