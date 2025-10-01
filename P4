@@ -1,0 +1,63 @@
+Aim: Write a program to apply edge detection techniques such as sobel and canny to extract meaningful
+information from the given image samples.
+
+CMD: pip install opencv-python matplotlib scikit-image numpy
+
+import numpy as np
+from skimage.io import imread
+from skimage import filters, feature
+from skimage.color import rgb2gray
+import matplotlib.pylab as plt
+
+# Load image
+img = imread(r"C:\Users\affan\OneDrive\Desktop\website.jpg")   # change path
+gray = rgb2gray(img)  # convert to grayscale
+
+# Create figure
+plt.figure(figsize=(15, 10))
+
+# Original
+plt.subplot(2, 4, 1)
+plt.title("Original")
+plt.imshow(gray, cmap='gray')
+plt.axis('off')
+
+# Roberts
+plt.subplot(2, 4, 2)
+plt.title("Roberts")
+plt.imshow(filters.roberts(gray), cmap='gray')
+plt.axis('off')
+
+# Scharr
+plt.subplot(2, 4, 3)
+plt.title("Scharr")
+plt.imshow(filters.scharr(gray), cmap='gray')
+plt.axis('off')
+
+# Sobel
+plt.subplot(2, 4, 4)
+plt.title("Sobel")
+plt.imshow(filters.sobel(gray), cmap='gray')
+plt.axis('off')
+
+# Prewitt
+plt.subplot(2, 4, 5)
+plt.title("Prewitt")
+plt.imshow(filters.prewitt(gray), cmap='gray')
+plt.axis('off')
+
+# Laplace
+laplace_edges = np.clip(filters.laplace(gray), 0, 1)
+plt.subplot(2, 4, 6)
+plt.title("Laplace")
+plt.imshow(laplace_edges, cmap='gray')
+plt.axis('off')
+
+# Canny
+plt.subplot(2, 4, 7)
+plt.title("Canny")
+plt.imshow(feature.canny(gray, sigma=2), cmap='gray')
+plt.axis('off')
+
+plt.tight_layout()
+plt.show()
