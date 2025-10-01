@@ -1,0 +1,33 @@
+Aim:Demonstrate the Upsampling and downsampling inImage:
+cmd: pip install opencv-python matplotlib scikit-image numpy
+
+import cv2
+import matplotlib.pyplot as plt
+
+# Load image
+img = cv2.imread(r"C:\Users\affan\OneDrive\Desktop\website.jpg") 
+img = cv2.cvtColor(img, cv2.COLOR_BGR2RGB)
+
+# Downsample and Upsample
+downsampled = cv2.pyrDown(img)
+upsampled = cv2.pyrUp(img)
+
+# Display Results
+plt.figure(figsize=(12, 4))
+
+plt.subplot(1, 3, 1)
+plt.title("Original")
+plt.imshow(img)
+plt.axis("off")
+
+plt.subplot(1, 3, 2)
+plt.title("Downsampled")
+plt.imshow(downsampled)
+plt.axis("off")
+
+plt.subplot(1, 3, 3)
+plt.title("Upsampled")
+plt.imshow(upsampled)
+plt.axis("off")
+
+plt.show()
